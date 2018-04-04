@@ -5,4 +5,5 @@ module com.wutiarn.flibustabot {
     requires spring.web;
     requires spring.beans;
     requires java.xml.bind;
+    requires com.fasterxml.jackson.dataformat.xml;
 }

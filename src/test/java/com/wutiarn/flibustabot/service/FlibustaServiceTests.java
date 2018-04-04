@@ -14,8 +14,8 @@ public class FlibustaServiceTests {
     public FlibustaService flibustaService;
 
 	@Test
-	public void testMainPageLoads() {
-	    flibustaService.getMainPage();
+	public void bookSearch() {
+	    flibustaService.search("1984");
 	}
 
 }
