@@ -1,5 +1,8 @@
 package com.wutiarn.flibustabot.service;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class FlibustaService {
     private static final String BASE_URL = "https://flibusta.is/";
 
@@ -16,6 +19,10 @@ public class FlibustaService {
     }
 
     public void getBookById(int id, FileFormat format) {
+
+    }
+
+    public void getMainPage() {
 
     }
 }
