@@ -4,4 +4,5 @@ module com.wutiarn.flibustabot {
     requires spring.boot.autoconfigure;
     requires spring.web;
     requires spring.beans;
+    requires java.xml.bind;
 }
