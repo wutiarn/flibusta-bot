@@ -1,12 +1,10 @@
 package com.wutiarn.flibustabot.service;
 
-import com.wutiarn.flibustabot.model.opds.Book;
 import com.wutiarn.flibustabot.model.opds.BookSearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class FlibustaService {
@@ -36,10 +34,11 @@ public class FlibustaService {
     }
 
     public void search(String query) {
-        var params = new HashMap<String, String>();
-        params.put("searchType", "books");
-        params.put("searchTerm", query);
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "opds/search")
+                .queryParam("searchType", "books")
+                .queryParam("searchTerm", query)
+                .toUriString();
 
-        BookSearchResult page = restTemplate.getForObject(BASE_URL + "opds/search", BookSearchResult.class, params);
+        BookSearchResult page = restTemplate.getForObject(url, BookSearchResult.class);
     }
 }
