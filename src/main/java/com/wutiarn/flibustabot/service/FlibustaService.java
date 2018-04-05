@@ -33,12 +33,13 @@ public class FlibustaService {
 
     }
 
-    public void search(String query) {
+    @SuppressWarnings("WeakerAccess")
+    public BookSearchResult search(String query) {
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "opds/search")
                 .queryParam("searchType", "books")
                 .queryParam("searchTerm", query)
                 .toUriString();
 
-        BookSearchResult page = restTemplate.getForObject(url, BookSearchResult.class);
+        return restTemplate.getForObject(url, BookSearchResult.class);
     }
 }
