@@ -6,4 +6,5 @@ module com.wutiarn.flibustabot {
     requires spring.beans;
     requires java.xml.bind;
     requires com.fasterxml.jackson.dataformat.xml;
+    requires java.telegram.bot.api;
 }
