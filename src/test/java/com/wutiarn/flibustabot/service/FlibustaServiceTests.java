@@ -16,7 +16,7 @@ public class FlibustaServiceTests {
 
 	@Test
 	public void bookSearch() {
-		BookSearchResult result = flibustaService.search("1984");
+		BookSearchResult result = flibustaService.search("1984", FlibustaService.SearchType.BOOKS);
 	}
 
 }

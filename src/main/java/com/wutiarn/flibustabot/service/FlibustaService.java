@@ -21,6 +21,16 @@ public class FlibustaService {
         }
     }
 
+    enum SearchType {
+        BOOKS("books"),
+        AUTHORS("authors");
+
+        private final String type;
+        SearchType(String type) {
+            this.type = type;
+        }
+    }
+
     private final String BASE_URL = "https://flibusta.is/";
     private final RestTemplate restTemplate;
 
@@ -29,17 +39,18 @@ public class FlibustaService {
         this.restTemplate = restTemplate;
     }
 
-    public void getBookById(int id, FileFormat format) {
+    public void getBookFile(int bookId, FileFormat format) {
 
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public BookSearchResult search(String query) {
+    public BookSearchResult search(String query, SearchType searchType) {
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "opds/search")
-                .queryParam("searchType", "books")
+                .queryParam("searchType", searchType.type)
                 .queryParam("searchTerm", query)
                 .toUriString();
 
         return restTemplate.getForObject(url, BookSearchResult.class);
     }
+
+
 }
