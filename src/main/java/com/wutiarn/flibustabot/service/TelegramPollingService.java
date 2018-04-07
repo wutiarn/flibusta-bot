@@ -2,9 +2,7 @@ package com.wutiarn.flibustabot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetUpdates;
-import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.wutiarn.flibustabot.exceptions.telegram.GettingUpdatesFailedException;
 import org.slf4j.Logger;
