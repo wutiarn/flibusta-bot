@@ -8,43 +8,44 @@ import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.commandbot.TelegramLongPollingCommandBot;
+import org.telegram.telegrambots.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
+import java.util.List;
+
 @Component
-public class FlibustaBot extends TelegramLongPollingBot {
+public class FlibustaBot extends TelegramLongPollingCommandBot {
 
     private String token;
-    private String username;
 
     private Logger logger = LoggerFactory.getLogger(FlibustaBot.class);
 
     public FlibustaBot(
             @Value("${flibustabot.telegram.token}") String token,
             @Value("${flibustabot.telegram.username}") String username,
-            TelegramBotsApi botsApi
+            TelegramBotsApi botsApi,
+            List<BotCommand> commands
     ) throws TelegramApiRequestException {
+        super(username);
         this.token = token;
-        this.username = username;
+
+        commands.forEach(this::register);
 
         botsApi.registerBot(this);
     }
 
     @Override
-    public String getBotUsername() {
-        return username;
+    public void processNonCommandUpdate(Update update) {
+        Message message = update.getMessage();
+        if (message != null && message.getChat().isUserChat() && message.hasText()) {
+            processPrivateTextMessage(message);
+        }
     }
 
     @Override
     public String getBotToken() {
         return token;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-        Message message = update.getMessage();
-        if (message != null && message.getChat().isUserChat() && message.hasText()) {
-            processPrivateTextMessage(message);
-        }
     }
 
     private void processPrivateTextMessage(Message message) {
