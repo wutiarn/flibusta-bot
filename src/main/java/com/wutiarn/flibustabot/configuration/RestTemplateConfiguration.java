@@ -6,7 +6,7 @@ import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConve
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class RestConfiguration {
+public class RestTemplateConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();

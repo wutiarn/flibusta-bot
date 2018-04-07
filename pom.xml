@@ -49,9 +49,9 @@
             <version>2.9.5</version>
         </dependency>
         <dependency>
-            <groupId>com.github.pengrad</groupId>
-            <artifactId>java-telegram-bot-api</artifactId>
-            <version>3.6.0</version>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>
