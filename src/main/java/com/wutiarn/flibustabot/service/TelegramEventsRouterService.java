@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.wutiarn.flibustabot.model.opds.BookSearchResult;
+import com.wutiarn.flibustabot.telegram.commands.TelegramCommandHandler;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.slf4j.Logger;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class TelegramEventsRouterService {
@@ -29,10 +30,13 @@ public class TelegramEventsRouterService {
 
     private Configuration freemarkerConfiguration;
 
+    private List<TelegramCommandHandler> commandHandlers;
+
     @Autowired
-    public TelegramEventsRouterService(FlibustaService flibustaService, Configuration freemarkerConfiguration) {
+    public TelegramEventsRouterService(FlibustaService flibustaService, Configuration freemarkerConfiguration, List<TelegramCommandHandler> commandHandlers) {
         this.flibustaService = flibustaService;
         this.freemarkerConfiguration = freemarkerConfiguration;
+        this.commandHandlers = commandHandlers;
     }
 
     public BaseRequest<? extends BaseRequest, ? extends BaseResponse> processUpdate(Update update) {
@@ -79,16 +83,15 @@ public class TelegramEventsRouterService {
 
     private BaseRequest<? extends BaseRequest, ? extends BaseResponse> handleCommand(Message message) {
         String messageText = message.text();
-        String command = messageText.split(" ")[0];
 
-        if (command.startsWith("/dl_")) {
-            var regex = Pattern.compile("/dl_(?<format>\\w+)_(?<id>\\d+)");
-            Matcher matcher = regex.matcher(command);
-            if (matcher.matches()) {
-                return handleBookDownload(message, matcher.group("format"), matcher.group("id"));
-            } else {
-                return new SendMessage(message.chat().id(), "Unsupported command");
+        if (messageText.startsWith("/")) {
+            for (var handler : commandHandlers) {
+                Matcher matcher = handler.getMessagePattern().matcher(messageText);
+                if (matcher.matches()) {
+                    return handler.handleMessage(message, matcher);
+                }
             }
+            return new SendMessage(message.chat().id(), "Unsupported command");
         }
 
         return null;
