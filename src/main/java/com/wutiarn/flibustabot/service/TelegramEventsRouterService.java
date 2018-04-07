@@ -53,7 +53,7 @@ public class TelegramEventsRouterService {
         BookSearchResult searchResults = flibustaService.search(query, FlibustaService.SearchType.BOOKS);
 
         var data = new HashMap<String, Object>();
-        data.put("query", "hello world");
+        data.put("results", searchResults);
 
         String renderedResult;
 

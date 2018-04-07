@@ -8,4 +8,8 @@ public class Author {
     public void setUri(String uri) {
         this.id = uri.replace("/a/", "");
     }
+
+    public String getName() {
+        return name;
+    }
 }

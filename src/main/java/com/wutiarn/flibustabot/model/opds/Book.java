@@ -9,4 +9,16 @@ public class Book {
     public void setId(String id) {
         this.id = id.replace("tag:book:", "");
     }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getId() {
+        return id;
+    }
 }
