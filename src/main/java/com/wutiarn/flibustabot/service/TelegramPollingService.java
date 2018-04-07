@@ -2,7 +2,9 @@ package com.wutiarn.flibustabot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetUpdates;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.wutiarn.flibustabot.exceptions.telegram.GettingUpdatesFailedException;
 import org.slf4j.Logger;
@@ -19,11 +21,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TelegramPollingService implements ApplicationRunner {
 
     Logger logger = LoggerFactory.getLogger(TelegramPollingService.class);
+
     private TelegramBot bot;
+    final TelegramEventsRouterService routerService;
 
     @Autowired
-    public TelegramPollingService(TelegramBot bot) {
+    public TelegramPollingService(TelegramBot bot, TelegramEventsRouterService routerService) {
         this.bot = bot;
+        this.routerService = routerService;
     }
 
     @Override
@@ -65,6 +70,10 @@ public class TelegramPollingService implements ApplicationRunner {
 
             updates.forEach(update -> {
                 lastUpdateId.set(update.updateId());
+                var resultRequest = routerService.processUpdate(update);
+                if (resultRequest != null) {
+                    bot.execute(resultRequest);
+                }
             });
         }
     }
