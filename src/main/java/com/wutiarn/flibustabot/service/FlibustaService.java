@@ -44,13 +44,12 @@ public class FlibustaService {
     }
 
     public BookSearchResult search(String query, SearchType searchType) {
-        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "opds/search")
+        var url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "opds/search")
                 .queryParam("searchType", searchType.type)
                 .queryParam("searchTerm", query)
-                .toUriString();
+                .build()
+                .toUri();
 
         return restTemplate.getForObject(url, BookSearchResult.class);
     }
-
-
 }
