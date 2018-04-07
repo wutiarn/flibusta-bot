@@ -48,7 +48,13 @@ public class TelegramEventsRouterService {
         String messageText = message.text();
         if (messageText != null) {
             if (messageText.startsWith("/")) {
-                return handleCommand(message);
+                for (var handler : commandHandlers) {
+                    Matcher matcher = handler.getMessagePattern().matcher(messageText);
+                    if (matcher.matches()) {
+                        return handler.handleMessage(message, matcher);
+                    }
+                }
+                return new SendMessage(message.chat().id(), "Unsupported command");
             } else {
                 return handleSearchRequest(message);
             }
@@ -79,25 +85,5 @@ public class TelegramEventsRouterService {
         }
 
         return new SendMessage(message.chat().id(), renderedResult).parseMode(ParseMode.HTML);
-    }
-
-    private BaseRequest<? extends BaseRequest, ? extends BaseResponse> handleCommand(Message message) {
-        String messageText = message.text();
-
-        if (messageText.startsWith("/")) {
-            for (var handler : commandHandlers) {
-                Matcher matcher = handler.getMessagePattern().matcher(messageText);
-                if (matcher.matches()) {
-                    return handler.handleMessage(message, matcher);
-                }
-            }
-            return new SendMessage(message.chat().id(), "Unsupported command");
-        }
-
-        return null;
-    }
-
-    BaseRequest<? extends BaseRequest, ? extends BaseResponse> handleBookDownload(Message message, String format, String id) {
-        return null;
     }
 }
