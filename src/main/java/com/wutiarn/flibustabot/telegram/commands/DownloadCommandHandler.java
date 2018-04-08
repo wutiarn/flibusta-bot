@@ -2,15 +2,15 @@ package com.wutiarn.flibustabot.telegram.commands;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.BaseRequest;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.wutiarn.flibustabot.service.FlibustaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -52,7 +52,17 @@ public class DownloadCommandHandler implements TelegramCommandHandler {
         return null;
     }
 
-    private void downloadAndSendBook(long chatId, int statusMessageId, String bootId, String bookFormat) {
+    private void downloadAndSendBook(long chatId, int statusMessageId, String bookId, String bookFormat) {
         bot.execute(new EditMessageText(chatId, statusMessageId, "Загрузка"));
+        byte[] result;
+        try {
+            result = flibustaService.getBookFile(bookId, bookFormat).readAllBytes();
+        } catch (IOException e) {
+            bot.execute(new EditMessageText(chatId, statusMessageId, String.format("Произошла ошибка: %s", e)));
+            return;
+        }
+        bot.execute(new EditMessageText(chatId, statusMessageId, "Отправка"));
+        bot.execute(new SendDocument(chatId, result).caption(String.format("%s.%s", bookId, bookFormat)));
+        bot.execute(new DeleteMessage(chatId, statusMessageId));
     }
 }
