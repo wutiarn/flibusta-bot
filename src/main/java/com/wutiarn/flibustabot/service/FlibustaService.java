@@ -3,31 +3,20 @@ package com.wutiarn.flibustabot.service;
 import com.wutiarn.flibustabot.exceptions.flibusta.BookBlockedException;
 import com.wutiarn.flibustabot.model.opds.BookFile;
 import com.wutiarn.flibustabot.model.opds.BookSearchResult;
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @Service
 public class FlibustaService {
-
-    enum FileFormat {
-        FB2("fb2"),
-        EPUB("epub"),
-        MOBI("mobi");
-
-
-        private final String format;
-        FileFormat(String format) {
-            this.format = format;
-        }
-    }
 
     enum SearchType {
         BOOKS("books"),
