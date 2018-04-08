@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -62,7 +61,7 @@ public class DownloadCommandHandler implements TelegramCommandHandler {
             return;
         }
         bot.execute(new EditMessageText(chatId, statusMessageId, "Отправка"));
-        bot.execute(new SendDocument(chatId, result).caption(String.format("%s.%s", bookId, bookFormat)));
+        bot.execute(new SendDocument(chatId, result).fileName(String.format("%s.%s", bookId, bookFormat)));
         bot.execute(new DeleteMessage(chatId, statusMessageId));
     }
 }

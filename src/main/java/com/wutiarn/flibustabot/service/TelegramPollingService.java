@@ -3,6 +3,7 @@ package com.wutiarn.flibustabot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.wutiarn.flibustabot.exceptions.telegram.GettingUpdatesFailedException;
 import org.slf4j.Logger;
@@ -70,7 +71,11 @@ public class TelegramPollingService implements ApplicationRunner {
                 lastUpdateId.set(update.updateId());
                 var resultRequest = routerService.processUpdate(update);
                 if (resultRequest != null) {
-                    bot.execute(resultRequest);
+                    BaseResponse resultResponse = bot.execute(resultRequest);
+                    if (!resultResponse.isOk()) {
+                        logger.info(String.format("Error sending response. Status %s: %s",
+                                resultResponse.errorCode(), resultResponse.description()));
+                    }
                 }
             });
         }

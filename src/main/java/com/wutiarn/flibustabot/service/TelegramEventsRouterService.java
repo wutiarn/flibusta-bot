@@ -46,6 +46,7 @@ public class TelegramEventsRouterService {
         }
 
         String messageText = message.text();
+        logger.info(String.format("Received from %s (%s): %s", message.chat().username(), message.chat().id(), messageText));
         if (messageText != null) {
             if (messageText.startsWith("/")) {
                 for (var handler : commandHandlers) {
