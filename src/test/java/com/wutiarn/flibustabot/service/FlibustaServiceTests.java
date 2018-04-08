@@ -19,7 +19,6 @@ public class FlibustaServiceTests {
     public void bookSearch() {
         BookSearchResult result = flibustaService.search("автостопом", FlibustaService.SearchType.BOOKS);
         Assert.assertNotNull(result.query);
-        Assert.assertNotNull(result.type);
         Assert.assertNotNull(result.entry);
 
         Assert.assertTrue(result.entry.size() > 1);

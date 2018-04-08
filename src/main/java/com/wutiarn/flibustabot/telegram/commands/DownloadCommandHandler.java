@@ -5,6 +5,8 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import com.wutiarn.flibustabot.exceptions.flibusta.BookBlockedException;
+import com.wutiarn.flibustabot.model.opds.BookFile;
 import com.wutiarn.flibustabot.service.FlibustaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,23 +47,27 @@ public class DownloadCommandHandler implements TelegramCommandHandler {
         int statusMessageId = sendResult.message().messageId();
 
         executor.execute(() -> {
-            downloadAndSendBook(message.chat().id(), statusMessageId, bookId, bookFormat);
+            downloadAndSendBook(message.chat().id(), message.messageId(), statusMessageId, bookId, bookFormat);
         });
 
         return null;
     }
 
-    private void downloadAndSendBook(long chatId, int statusMessageId, String bookId, String bookFormat) {
+    private void downloadAndSendBook(long chatId, int requestMessageId, int statusMessageId, String bookId, String bookFormat) {
         bot.execute(new EditMessageText(chatId, statusMessageId, "Загрузка"));
-        byte[] result;
+        BookFile bookFile;
         try {
-            result = flibustaService.getBookFile(bookId, bookFormat).readAllBytes();
+            bookFile = flibustaService.getBookFile(bookId, bookFormat);
         } catch (IOException e) {
             bot.execute(new EditMessageText(chatId, statusMessageId, String.format("Произошла ошибка: %s", e)));
             return;
+        } catch (BookBlockedException e) {
+            bot.execute(new EditMessageText(chatId, statusMessageId, "К сожалению доступ к данной " +
+                    "книге ограничен по требованию правоторговца"));
+            return;
         }
         bot.execute(new EditMessageText(chatId, statusMessageId, "Отправка"));
-        bot.execute(new SendDocument(chatId, result).fileName(String.format("%s.%s", bookId, bookFormat)));
+        bot.execute(new SendDocument(chatId, bookFile.content).fileName(bookFile.filename).replyToMessageId(requestMessageId));
         bot.execute(new DeleteMessage(chatId, statusMessageId));
     }
 }
