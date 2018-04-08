@@ -55,7 +55,7 @@ public class TelegramPollingService implements ApplicationRunner {
         AtomicInteger lastUpdateId = new AtomicInteger();
         //noinspection InfiniteLoopStatement
         while (true) {
-            GetUpdates getUpdatesRequest = new GetUpdates().offset(lastUpdateId.get() + 1).timeout(30);
+            GetUpdates getUpdatesRequest = new GetUpdates().offset(lastUpdateId.get() + 1).timeout(60);
             GetUpdatesResponse response = bot.execute(getUpdatesRequest);
 
             if (!response.isOk()) {

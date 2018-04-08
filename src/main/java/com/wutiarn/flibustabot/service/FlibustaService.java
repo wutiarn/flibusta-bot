@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FlibustaService {
@@ -23,6 +24,7 @@ public class FlibustaService {
         AUTHORS("authors");
 
         private final String type;
+
         SearchType(String type) {
             this.type = type;
         }
@@ -30,11 +32,12 @@ public class FlibustaService {
 
     private final String BASE_URL = "https://flibusta.is";
     private final RestTemplate restTemplate;
-    private final OkHttpClient okHttpClient = new OkHttpClient();
+    private final OkHttpClient okHttpClient;
 
     @Autowired
-    public FlibustaService(RestTemplate restTemplate) {
+    public FlibustaService(RestTemplate restTemplate, OkHttpClient okHttpClient) {
         this.restTemplate = restTemplate;
+        this.okHttpClient = okHttpClient;
     }
 
     public BookFile getBookFile(String bookId, String format) throws IOException, BookBlockedException {
