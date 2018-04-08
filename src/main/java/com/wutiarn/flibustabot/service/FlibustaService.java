@@ -52,28 +52,28 @@ public class FlibustaService {
         Request request = new Request.Builder()
                 .url(String.format("%s/b/%s/%s", BASE_URL, bookId, format))
                 .build();
-        Response response = okHttpClient.newCall(request).execute();
-        assert response.body() != null;
-        HttpUrl actualUrl = response.request().url();
-        if (!actualUrl.host().equals("static.flibusta.is")) {
-            throw new BookBlockedException();
+        try (Response response = okHttpClient.newCall(request).execute();) {
+            assert response.body() != null;
+            HttpUrl actualUrl = response.request().url();
+            if (!actualUrl.host().equals("static.flibusta.is")) {
+                throw new BookBlockedException();
+            }
+
+            List<String> pathSegments = actualUrl.pathSegments();
+
+            String filename = pathSegments.get(pathSegments.size() - 1);
+            if (!filename.contains(".")) {
+                filename = String.format("%s.%s", bookId, format);
+            }
+
+            byte[] content = response.body().bytes();
+            return new BookFile(filename, content);
         }
-
-        List<String> pathSegments = actualUrl.pathSegments();
-
-        String filename = pathSegments.get(pathSegments.size() - 1);
-        if (!filename.contains(".")) {
-            filename = String.format("%s.%s", bookId, format);
-        }
-
-        byte[] content = response.body().bytes();
-
-        return new BookFile(filename, content);
     }
 
-    public BookSearchResult search(String query, SearchType searchType) {
+    public BookSearchResult searchBooks(String query) {
         var url = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/opds/search")
-                .queryParam("searchType", searchType.type)
+                .queryParam("searchType", SearchType.BOOKS.type)
                 .queryParam("searchTerm", query)
                 .build()
                 .toUri();

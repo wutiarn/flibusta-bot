@@ -17,7 +17,7 @@ public class FlibustaServiceTests {
 
     @Test
     public void bookSearch() {
-        BookSearchResult result = flibustaService.search("автостопом", FlibustaService.SearchType.BOOKS);
+        BookSearchResult result = flibustaService.searchBooks("автостопом");
         Assert.assertNotNull(result.query);
         Assert.assertNotNull(result.entry);
 
@@ -25,5 +25,4 @@ public class FlibustaServiceTests {
         Assert.assertNotNull(result.entry.get(0).id);
         Assert.assertNotNull(result.entry.get(1).id);
     }
-
 }

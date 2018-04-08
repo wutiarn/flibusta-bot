@@ -65,7 +65,7 @@ public class TelegramEventsRouterService {
 
     private BaseRequest<? extends BaseRequest, ? extends BaseResponse> handleSearchRequest(Message message) {
         String query = message.text();
-        BookSearchResult searchResults = flibustaService.search(query, FlibustaService.SearchType.BOOKS);
+        BookSearchResult searchResults = flibustaService.searchBooks(query);
 
         var data = new HashMap<String, Object>();
         data.put("results", searchResults);

@@ -38,7 +38,7 @@ public class TelegramPollingService implements ApplicationRunner {
                 try {
                     poll();
                 } catch (Exception e) {
-                    logger.error("Exception occurred while polling telegram updates", e);
+                    logger.warn("Exception occurred while polling telegram updates", e);
                     try {
                         Thread.sleep(10_000);
                     } catch (InterruptedException e1) {
